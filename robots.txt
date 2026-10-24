@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO(owner): replace the placeholder domain with the real domain after launch.
+Sitemap: https://skillmdvalidator.com/sitemap.xml
