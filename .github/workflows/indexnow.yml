@@ -1,0 +1,58 @@
+# 新页面发布 / sitemap 更新后，自动通过 IndexNow 协议通知 Bing、Yandex 等搜索引擎来抓取
+# 触发：main 分支有 .html 或 sitemap.xml 变更时；也可手动触发
+# 注意：Google 不支持 IndexNow，Google 收录仍走 GSC 手动请求（见 README）
+name: IndexNow ping
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.html'
+      - 'sitemap.xml'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      INDEXNOW_KEY: 02524e8ba61a4f19fc5d7be853e3f1b0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Submit sitemap URLs to IndexNow
+        run: |
+          python3 - <<'PYEOF'
+          import os, sys, urllib.request, urllib.error, urllib.parse
+          import xml.etree.ElementTree as ET
+
+          key = os.environ['INDEXNOW_KEY']
+          root = ET.parse('sitemap.xml').getroot()
+          ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+          urls = [e.text.strip() for e in root.findall('s:url/s:loc', ns)]
+          host = urllib.parse.urlparse(urls[0]).netloc
+
+          # IndexNow 要求 key 文件能公开访问；刚推送完 Pages 可能还没部署好，只告警不中断
+          try:
+              req = urllib.request.Request('https://%s/%s.txt' % (host, key),
+                                           headers={'User-Agent': 'Mozilla/5.0'})
+              body = urllib.request.urlopen(req, timeout=30).read().decode().strip()
+              print('key file:', 'OK' if body == key else 'MISMATCH')
+          except Exception as e:
+              print('key file not reachable yet (Pages may still be deploying):', e)
+
+          failed = []
+          for u in urls:
+              q = urllib.parse.urlencode({'url': u, 'key': key})
+              try:
+                  r = urllib.request.urlopen('https://api.indexnow.org/indexnow?' + q, timeout=30)
+                  print(u, '->', r.status)
+                  if r.status >= 400:
+                      failed.append(u)
+              except urllib.error.HTTPError as e:
+                  print(u, '-> HTTP', e.code)
+                  failed.append(u)
+              except Exception as e:
+                  print(u, '-> ERR', e)
+                  failed.append(u)
+          sys.exit(1 if failed else 0)
+          PYEOF
