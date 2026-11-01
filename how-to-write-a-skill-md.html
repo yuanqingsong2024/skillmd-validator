@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Write a SKILL.md That Agents Actually Load (2026 Guide)</title>
+<meta name="description" content="Learn how to write a SKILL.md file that agents actually load: valid frontmatter, name and description rules, folder naming, and a copy-paste template — then check it free in your browser.">
+<link rel="canonical" href="https://skillmdvalidator.com/how-to-write-a-skill-md.html">
+<meta property="og:title" content="How to Write a SKILL.md That Agents Actually Load (2026 Guide)">
+<meta property="og:description" content="Valid frontmatter, name and description rules, folder naming, and a copy-paste template — then check your SKILL.md free in your browser.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://skillmdvalidator.com/how-to-write-a-skill-md.html">
+<link rel="stylesheet" href="style.css">
+<!-- Google tag (gtag.js) - page visits only; SKILL.md file contents are never sent. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-309C665CHX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-309C665CHX');
+</script>
+</head>
+<body>
+<div class="wrap">
+
+<header class="site">
+  <span class="hero-badge"><span class="dot"></span>GUIDE · FREE</span>
+  <h1>How to Write a <span class="grad">SKILL.md</span> That Agents Actually Load</h1>
+  <p class="tagline">Valid frontmatter, name and description rules, folder naming, and a copy-paste template — then check your file free in your browser.</p>
+  <p class="hint">Published November 1, 2026. Rules checked against the <a href="https://agentskills.io/specification" rel="noopener">official Agent Skills specification</a> on 2026-10-23. Prefer the tool? <a href="/">Validate your SKILL.md free</a>.</p>
+</header>
+
+<main>
+  <section class="content">
+    <p>A SKILL.md file teaches an AI agent a new capability. It is a folder containing a <code>SKILL.md</code> file — YAML frontmatter followed by Markdown instructions — plus optional <code>scripts/</code>, <code>references/</code>, and <code>assets/</code>. Get the frontmatter wrong and many agents will never surface your skill at all, with no error message. Get it right and your skill loads reliably across Claude Code, OpenAI Codex, Cursor, and Gemini CLI.</p>
+
+    <p class="eyebrow">STEP 1</p>
+    <h2>Create the folder first, then match the name</h2>
+    <p>Create a folder for the skill, then set the frontmatter <code>name</code> to exactly the folder name.</p>
+    <p>Rules that cause silent failures:</p>
+    <ul>
+      <li><code>name</code> must be 1–64 characters: lowercase letters, numbers, and hyphens only.</li>
+      <li>It must not start or end with a hyphen, and must not contain consecutive hyphens.</li>
+      <li>It must match the parent directory name exactly.</li>
+    </ul>
+    <p>Example: a folder called <code>pdf-table-extractor</code> needs <code>name: pdf-table-extractor</code>. Rename the folder later and you must rename the field too, or the skill stops matching.</p>
+
+    <p class="eyebrow">STEP 2</p>
+    <h2>Write a description agents can trigger on</h2>
+    <p>Agents load every installed skill's <code>name</code> and <code>description</code> at startup and use the description to decide when to activate the full skill. That makes the description the most important field in the file.</p>
+    <ul>
+      <li>Required, non-empty, 1–1,024 characters.</li>
+      <li>Say what the skill does <em>and</em> when to use it, with specific keywords.</li>
+      <li>Keep it tight: name + description sit in the agent's context for every session, so a bloated description costs standing context on every run.</li>
+    </ul>
+    <p>Good description pattern: "Use when you need to [task] with [input/output]."</p>
+
+    <p class="eyebrow">STEP 3</p>
+    <h2>Add only the optional fields you need</h2>
+    <ul>
+      <li><code>license</code>: a short license name or a reference to a bundled license file.</li>
+      <li><code>compatibility</code>: 1–500 characters if provided — intended product, system packages, network access.</li>
+      <li><code>metadata</code>: a map of string keys to string values for extra properties.</li>
+      <li><code>allowed-tools</code>: a space-separated list of pre-approved tools. This is experimental and support varies by agent, so do not rely on it alone. Never use a wildcard here.</li>
+    </ul>
+
+    <p class="eyebrow">STEP 4</p>
+    <h2>Write the body for the agent, not for a human reader</h2>
+    <p>After the closing <code>---</code> of the frontmatter, write Markdown instructions the agent will follow when the skill activates: the task, the inputs it will receive, the steps in order, and what a good result looks like. Put long reference material in <code>references/</code> and executable helpers in <code>scripts/</code> instead of bloating the main file.</p>
+
+    <p class="eyebrow">STEP 5</p>
+    <h2>Check the file before you ship it</h2>
+    <p>Paste the full file into the free checker and fix every error first:</p>
+    <p><strong><a href="/">Validate your SKILL.md free — skillmdvalidator.com</a></strong></p>
+    <p>Errors are the official spec rules (missing name/description, unclosed frontmatter, folder-name mismatch, the character caps). Warnings are security heuristics worth a second look before you install or share a third-party skill.</p>
+
+    <p class="eyebrow">EXAMPLE</p>
+    <h2>A complete example you can copy</h2>
+<pre><code>---
+name: pdf-table-extractor
+description: Use when you need to extract tables from a PDF into clean Markdown. Handles scanned pages, multi-page tables, and merged header cells.
+---
+
+# PDF Table Extractor
+
+## When to use this skill
+When the user asks to convert a PDF table into Markdown, CSV, or a spreadsheet.
+
+## Steps
+1. Identify the pages that contain tables.
+2. Extract each table, preserving header rows.
+3. Return Markdown tables, one per source table, in page order.
+
+## Output format
+Markdown tables with a header row. Do not invent values for empty cells.
+</code></pre>
+
+    <p class="eyebrow">ANTI-PATTERN</p>
+    <h2>Bad example: the same skill, written to fail silently</h2>
+<pre><code>---
+name: PDF_Table_Extractor
+description:
+---
+
+# PDF Table Extractor
+</code></pre>
+    <p>Three failures in five lines: uppercase letters and underscores in <code>name</code>, an empty <code>description</code>, and a name that cannot match any valid folder name. This is exactly the kind of file that loads nowhere and explains nothing.</p>
+
+    <p class="eyebrow">CHECKLIST</p>
+    <h2>Checklist before you publish a skill</h2>
+    <ul>
+      <li>Folder name and <code>name</code> field match exactly</li>
+      <li><code>description</code> is non-empty, under 1,024 characters, and says when to use the skill</li>
+      <li>Frontmatter opens and closes with <code>---</code></li>
+      <li>No <code>curl | bash</code>, <code>rm -rf</code>, wildcard <code>allowed-tools</code>, or hidden Unicode characters</li>
+      <li>File passes the free checker with zero errors</li>
+    </ul>
+
+    <p class="eyebrow">FAQ</p>
+    <h2>FAQ</h2>
+    <details>
+      <summary>Where do I put a skill so agents find it?</summary>
+      <p>Paths differ by agent (for example <code>~/.claude/skills/</code> for Claude Code and <code>~/.agents/skills/</code> as a shared location), but the file format is the same. Several agents also read the shared <code>~/.agents/skills/</code> location.</p>
+    </details>
+    <details>
+      <summary>Does a clean validation mean a skill is safe?</summary>
+      <p>No. A clean report means the format follows the spec and none of the checker's known risky patterns were found. It is a first pass, not a security audit — always read a third-party skill in full before installing it.</p>
+    </details>
+    <details>
+      <summary>Can I check a file without uploading it?</summary>
+      <p>Yes. The checker on skillmdvalidator.com runs entirely in your browser. Your file contents are never uploaded, analyzed, or stored; only anonymous page visits are counted.</p>
+    </details>
+
+    <p style="margin-top:2rem"><strong>Ready to ship it?</strong> <a href="/">Validate your SKILL.md free</a> — it runs 100% in your browser, and nothing you paste ever leaves your device.</p>
+  </section>
+</main>
+
+<footer class="site">
+  <p>SKILL.md Validator is a free, unofficial tool. It is not affiliated with Anthropic, the Agentic AI Foundation (AAIF), OpenAI, or any agent vendor. “Agent Skills” and the SKILL.md format are defined by the open specification at <a href="https://agentskills.io/specification" rel="noopener">agentskills.io/specification</a>, which is the source of the validation rules used here.</p>
+  <p>Rules checked against the specification on 2026-10-23. Found a rule this tool gets wrong? Check the spec first — then fix your file, not your expectations.</p>
+</footer>
+
+</div>
+</body>
+</html>

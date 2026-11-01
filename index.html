@@ -25,9 +25,15 @@
 <div class="wrap">
 
 <header class="site">
-  <h1>SKILL.md Validator</h1>
+  <span class="hero-badge"><span class="dot"></span>FREE · NO SIGN-UP · RUNS 100% IN YOUR BROWSER</span>
+  <h1>SKILL.md <span class="grad">Validator</span></h1>
   <p class="tagline">Check your Agent Skills <code>SKILL.md</code> file against the official specification, estimate the token cost it adds to every session, and catch risky patterns before you ship it.</p>
-  <span class="privacy-note"><strong>100% private:</strong> your SKILL.md file is checked locally in your browser and is never uploaded, stored, or sent to a server. Only anonymous page visits are counted.</span>
+  <ul class="hero-points">
+    <li><b>Format check</b> — frontmatter rules from the official spec</li>
+    <li><b>Security scan</b> — risky patterns flagged before you install</li>
+    <li><b>Token estimate</b> — see what each skill costs per session</li>
+  </ul>
+  <span class="privacy-note"><span class="lock-dot"></span><span><strong>100% private:</strong> your SKILL.md file is checked locally in your browser and is never uploaded, stored, or sent to a server. Only anonymous page visits are counted.</span></span>
 </header>
 
 <main>
@@ -53,19 +59,22 @@
   </section>
 
   <section class="content">
+    <p class="eyebrow">BASICS</p>
     <h2>What is a SKILL.md file?</h2>
     <p>Agent Skills are an open format for teaching AI agents new capabilities. A skill is a folder that contains a <code>SKILL.md</code> file — YAML frontmatter followed by Markdown instructions — plus optional <code>scripts/</code>, <code>references/</code>, and <code>assets/</code>. The format is defined by the <a href="https://agentskills.io/specification" rel="noopener">Agent Skills specification at agentskills.io</a> and is read by a growing list of agents, including Claude Code, OpenAI Codex, Cursor, and Gemini CLI.</p>
     <p>Two frontmatter fields do the heavy lifting. <code>name</code> is the skill’s identifier, and <code>description</code> is the trigger: agents load the name and description of <em>every</em> installed skill at startup and use the description to decide whether to activate the full skill. A malformed name or an over-long description can make a skill invisible, unreliable, or rejected outright — often silently.</p>
 
+    <p class="eyebrow">WHY IT MATTERS</p>
     <h2>Why validate before you ship?</h2>
     <p><strong>Discovery breaks quietly.</strong> If <code>name</code> doesn’t match the folder name, or <code>description</code> is empty, many agents simply never surface your skill — no error, no warning.</p>
     <p><strong>The spec has hard limits.</strong> Names are capped at 64 characters with a strict character set; descriptions are capped at 1,024 characters; <code>compatibility</code> at 500. Crossing a limit is exactly the kind of thing a 10-second check catches.</p>
     <p><strong>Skills carry real power — and real risk.</strong> A SKILL.md can tell an agent to run shell commands. Patterns like <code>curl … | bash</code>, <code>rm -rf</code>, wildcard <code>allowed-tools</code>, or invisible Unicode characters hiding instructions are worth catching in review, whether the risk is accidental or planted by a third-party skill you downloaded.</p>
     <p><strong>Metadata isn’t free.</strong> Your name + description sit in the agent’s context for every session (the spec budgets roughly 100 tokens for typical metadata). This validator estimates that standing cost so you can keep descriptions tight.</p>
 
+    <p class="eyebrow">REFERENCE</p>
     <h2>The official rules at a glance</h2>
     <p>These are the frontmatter fields defined by the <a href="https://agentskills.io/specification" rel="noopener">official specification</a> (checked 2026-10-23). This validator enforces them as errors; everything else it reports is labelled as a security warning or a best-practice suggestion.</p>
-    <table>
+    <div class="table-card"><div class="table-scroll"><table>
       <thead><tr><th>Field</th><th>Required</th><th>Official constraints</th></tr></thead>
       <tbody>
         <tr><td><code>name</code></td><td>Yes</td><td>1–64 characters; lowercase letters, numbers and hyphens only; must not start or end with a hyphen; no consecutive hyphens; must match the parent directory name.</td></tr>
@@ -75,11 +84,12 @@
         <tr><td><code>metadata</code></td><td>No</td><td>A map from string keys to string values, for additional properties.</td></tr>
         <tr><td><code>allowed-tools</code></td><td>No</td><td>Space-separated string of pre-approved tools. Experimental — support varies by agent.</td></tr>
       </tbody>
-    </table>
+    </table></div></div>
 
+    <p class="eyebrow">COMPATIBILITY</p>
     <h2>Where does each agent look for skills?</h2>
     <p>The same skill folder works across agents — what differs is where each agent scans for it. Paths below were cross-checked against public documentation and open-source installers on 2026-10-23. Several agents also read the shared <code>~/.agents/skills/</code> location, and exact paths can change between versions, so confirm against your agent’s own docs if a skill isn’t discovered.</p>
-    <table>
+    <div class="table-card"><div class="table-scroll"><table>
       <thead><tr><th>Agent</th><th>User-wide location</th><th>Per-project location</th></tr></thead>
       <tbody>
         <tr><td>Claude Code</td><td><code>~/.claude/skills/</code></td><td><code>.claude/skills/</code></td></tr>
@@ -88,9 +98,39 @@
         <tr><td>Gemini CLI</td><td><code>~/.gemini/skills/</code> (also reads <code>~/.agents/skills/</code>)</td><td><code>.gemini/skills/</code> (also <code>.agents/skills/</code>)</td></tr>
         <tr><td>GitHub Copilot (VS Code)</td><td><code>~/.copilot/skills/</code> (also reads <code>~/.agents/skills/</code>)</td><td><code>.github/skills/</code> (also <code>.agents/skills/</code>)</td></tr>
       </tbody>
-    </table>
+    </table></div></div>
     <p>A common setup is to keep one canonical skills folder and symlink it into each agent’s location, so a single <code>SKILL.md</code> serves every tool — which is exactly why validating against the shared base specification, rather than one vendor’s quirks, matters.</p>
 
+    <p class="eyebrow">TROUBLESHOOTING</p>
+    <h2>Common errors and how to fix them</h2>
+    <p>Every row below is a message this validator actually produces. Find your error, fix that one thing, and re-run the check — most files pass after a single round of fixes.</p>
+    <div class="table-card"><div class="table-scroll"><table>
+      <thead><tr><th>What the report says</th><th>Usual cause</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>No YAML frontmatter found</td><td>File starts with Markdown instead of a <code>---</code> block</td><td>Add a <code>---</code> block at the very top with at least <code>name</code> and <code>description</code>.</td></tr>
+        <tr><td>Frontmatter is not closed</td><td>Opening <code>---</code> with no closing <code>---</code></td><td>Add a second <code>---</code> line after the last frontmatter field.</td></tr>
+        <tr><td>Missing required field: name / description</td><td>Field absent or empty</td><td>Add the missing line. <code>description</code> must say what the skill does <em>and</em> when to use it.</td></tr>
+        <tr><td>Invalid skill name</td><td>Uppercase letters, underscores, leading/trailing or double hyphens, or over 64 characters</td><td>Rewrite it in lowercase letters, numbers and single hyphens only, 1–64 characters.</td></tr>
+        <tr><td>Folder name does not match the skill name</td><td>Folder renamed or file copied into a differently-named folder</td><td>Rename the folder or the <code>name</code> field so the two are identical.</td></tr>
+        <tr><td>description is too long</td><td>Over 1,024 characters</td><td>Shorten it; move detail into the Markdown body or a <code>references/</code> file.</td></tr>
+        <tr><td>compatibility is too long</td><td>Over 500 characters</td><td>Trim it to the essential environment requirements.</td></tr>
+        <tr><td>allowed-tools is very broad (wildcard)</td><td><code>*</code> or <code>Bash(*)</code> pre-approves everything</td><td>List only the specific tools the skill needs.</td></tr>
+        <tr><td>Remote script piped straight into a shell</td><td><code>curl | bash</code> / <code>wget | sh</code> step in the body</td><td>Download the script first, inspect it, pin a version or checksum, then run it.</td></tr>
+      </tbody>
+    </table></div></div>
+
+    <p class="eyebrow">DEBUGGING</p>
+    <h2>Skill still not loading after a clean report?</h2>
+    <p>A clean report means the format is right. If an agent still does not surface the skill, work through this list — these are the causes a format check cannot see:</p>
+    <ul>
+      <li><strong>Wrong folder.</strong> Check the skill folder is under the path your agent actually scans (see the table above), not a similarly-named directory.</li>
+      <li><strong>Agent not restarted.</strong> Most agents read the skill list at startup, so restart the agent after adding or renaming a skill.</li>
+      <li><strong>Wrong file name.</strong> The file must be named exactly <code>SKILL.md</code> inside its folder — a renamed copy will not be picked up.</li>
+      <li><strong>Folder renamed after validation.</strong> Renaming the folder breaks the name match; re-run the check with the new folder name.</li>
+      <li><strong>Trigger wording.</strong> If the skill loads but never activates, the <code>description</code> probably does not describe the situations it should trigger on — add a “Use when…” sentence with specific keywords.</li>
+    </ul>
+
+    <p class="eyebrow">FAQ</p>
     <h2>FAQ</h2>
     <details>
       <summary>Is this the official Agent Skills validator?</summary>
