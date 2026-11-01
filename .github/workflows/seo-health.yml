@@ -1,0 +1,105 @@
+# 每日 SEO 健康检查：每天 09:00（北京时间）自动跑，也可手动触发
+# 检查项：首页存活、robots.txt、sitemap 全部 URL 返回 200、全站死链扫描
+# 失败会自动发邮件通知仓库 owner；在仓库 Actions 标签页看每次运行的详细报告
+name: SEO health check
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 01:00 UTC = 09:00 CST
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check site health
+        run: |
+          python3 - <<'PYEOF'
+          import re, sys, urllib.request, urllib.error, urllib.parse
+          import xml.etree.ElementTree as ET
+          from html.parser import HTMLParser
+
+          SITE = 'https://skillmdvalidator.com'
+          UA = {'User-Agent': 'Mozilla/5.0 (compatible; skillmdvalidator-seo-health/1.0)'}
+          TIMEOUT = 30
+          failures = []
+
+          def fetch(url):
+              req = urllib.request.Request(url, headers=UA)
+              try:
+                  with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+                      return r.status, r.read().decode('utf-8', 'ignore'), str(r.url)
+              except urllib.error.HTTPError as e:
+                  return e.code, '', url
+              except Exception as e:
+                  return 'ERR %s' % e, '', url
+
+          def ok(label, cond, detail=''):
+              print(('PASS' if cond else 'FAIL'), '-', label, detail)
+              if not cond:
+                  failures.append(label)
+
+          # 1. 首页存活
+          code, _, _ = fetch(SITE + '/')
+          ok('homepage returns 200', code == 200, 'got %s' % code)
+
+          # 2. robots.txt 存在且指向 sitemap
+          code, body, _ = fetch(SITE + '/robots.txt')
+          ok('robots.txt returns 200 and mentions sitemap',
+             code == 200 and 'sitemap' in body.lower(), 'got %s' % code)
+
+          # 3. sitemap 可解析，且每个 URL 都返回 200
+          code, body, _ = fetch(SITE + '/sitemap.xml')
+          page_urls = []
+          if code == 200:
+              try:
+                  root = ET.fromstring(body)
+                  ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+                  page_urls = [e.text.strip() for e in root.findall('s:url/s:loc', ns)]
+              except Exception as e:
+                  print('FAIL - sitemap.xml parse error:', e)
+                  failures.append('sitemap.xml parse')
+          ok('sitemap.xml parses with at least 1 url', len(page_urls) > 0,
+             '%d urls' % len(page_urls))
+          for u in page_urls:
+              c, _, _ = fetch(u)
+              ok('sitemap url 200: %s' % u, c == 200, 'got %s' % c)
+
+          # 4. 死链扫描：抓取 sitemap 里每个页面的全部链接并逐个检查
+          class LinkParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links = []
+              def handle_starttag(self, tag, attrs):
+                  if tag in ('a', 'link'):
+                      for k, v in attrs:
+                          if k == 'href' and v:
+                              self.links.append(v)
+                  elif tag in ('img', 'script'):
+                      for k, v in attrs:
+                          if k == 'src' and v:
+                              self.links.append(v)
+
+          seen = {}
+          for page in page_urls:
+              c, body, final = fetch(page)
+              if c != 200:
+                  continue
+              p = LinkParser()
+              p.feed(body)
+              for raw in p.links:
+                  link = urllib.parse.urldefrag(raw)[0].strip()
+                  if not link or link.startswith(('mailto:', 'tel:', 'javascript:', '#')):
+                      continue
+                  abs_url = urllib.parse.urljoin(final, link)
+                  if abs_url in seen:
+                      continue
+                  c2, _, _ = fetch(abs_url)
+                  seen[abs_url] = c2
+                  good = isinstance(c2, int) and 200 <= c2 < 400
+                  ok('link %s' % abs_url, good, 'got %s (from %s)' % (c2, page))
+
+          print('\n%d links checked, %d failures' % (len(seen), len(failures)))
+          sys.exit(1 if failures else 0)
+          PYEOF
