@@ -1,0 +1,35 @@
+# GSC 每日报告：每天 09:00（北京时间）自动跑，也可手动触发
+# 查：每篇文章的收录状态（URL Inspection API）、近 28 天各页面点击/曝光/点击率/平均排名、热门查询词
+# 报告写到 docs/gsc-report.md 并提交回仓库，同时显示在当次运行的 Summary 里
+# 需要仓库 secret GSC_SERVICE_ACCOUNT_JSON（service account JSON 原文）
+name: GSC daily report
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 01:00 UTC = 09:00 CST
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install google-api-python-client google-auth
+      - name: Query GSC and build report
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+        run: python3 scripts/gsc_report.py
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/gsc-report.md
+          git diff --cached --quiet || git commit -m "Daily GSC report"
+          git push
