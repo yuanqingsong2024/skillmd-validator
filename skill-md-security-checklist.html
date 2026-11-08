@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SKILL.md Security: 7 Risks to Check Before You Install a Skill (2026 Checklist)</title>
+<meta name="description" content="Before you install a third-party SKILL.md, check these 7 security risks: piped remote scripts, destructive commands, wildcard tool approvals, hidden Unicode, and more — then scan it free in your browser.">
+<link rel="canonical" href="https://skillmdvalidator.com/skill-md-security-checklist.html">
+<meta property="og:title" content="SKILL.md Security: 7 Risks to Check Before You Install a Skill (2026 Checklist)">
+<meta property="og:description" content="Piped remote scripts, destructive commands, wildcard tool approvals, hidden Unicode, and more — check these 7 risks before you install a third-party skill.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://skillmdvalidator.com/skill-md-security-checklist.html">
+<link rel="stylesheet" href="style.css">
+<!-- Google tag (gtag.js) - page visits only; SKILL.md file contents are never sent. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-309C665CHX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-309C665CHX');
+</script>
+</head>
+<body>
+<div class="wrap">
+
+<header class="site">
+  <span class="hero-badge"><span class="dot"></span>CHECKLIST · FREE</span>
+  <h1>SKILL.md Security: 7 Risks to Check <span class="grad">Before You Install a Skill</span></h1>
+  <p class="tagline">Piped remote scripts, destructive commands, wildcard tool approvals, hidden Unicode, and more — check these 7 risks before you install a third-party skill.</p>
+  <p class="hint">Published November 8, 2026. Rules checked against the <a href="https://agentskills.io/specification" rel="noopener">official Agent Skills specification</a> on 2026-10-23. Prefer the tool? <a href="/">Validate your SKILL.md free</a>.</p>
+</header>
+
+<main>
+  <section class="content">
+    <p>A SKILL.md file is not just documentation. When an agent loads it, the instructions inside can tell that agent to run shell commands, read files, and call tools on your machine. That is exactly why skills are powerful — and exactly why a skill you downloaded from someone else deserves a security check before you install it.</p>
+    <p>This checklist covers the 7 risks worth checking every time. Items 1–5 are patterns the free checker flags as warnings; items 6–7 need your own eyes, because no format check can catch intent written in plain language.</p>
+
+    <p class="eyebrow">RISK 1</p>
+    <h2>Piped remote scripts (<code>curl … | bash</code>)</h2>
+    <p>The classic one. A skill that tells the agent to download a script from a URL and pipe it straight into a shell gives whoever controls that URL arbitrary code execution on your machine — and the URL's content can change after you reviewed it.</p>
+    <p>Check: search the file for <code>curl</code>, <code>wget</code>, and <code>| bash</code> / <code>| sh</code>. If a skill really needs a remote script, download it first, read it, and pin it to a version you reviewed.</p>
+
+    <p class="eyebrow">RISK 2</p>
+    <h2>Destructive commands</h2>
+    <p><code>rm -rf</code>, forced deletes, disk formatting, and recursive overwrites have no place in a skill you did not write yourself. Even a legitimate cleanup step can go wrong if a variable expands to an unexpected path.</p>
+    <p>Check: search for <code>rm -rf</code>, <code>rm -r</code>, <code>mkfs</code>, <code>dd</code>, and <code>chmod -R 777</code>. Ask whether the skill actually needs delete permission at all.</p>
+
+    <p class="eyebrow">RISK 3</p>
+    <h2>Wildcard <code>allowed-tools</code></h2>
+    <p>The <code>allowed-tools</code> frontmatter field pre-approves tools for the agent. A wildcard value hands the agent a blank cheque: every tool becomes available without further confirmation, including the dangerous ones from risks 1 and 2.</p>
+    <p>Check: if <code>allowed-tools</code> contains <code>*</code>, treat it as a red flag. A trustworthy skill lists exactly the tools it needs, nothing more. Note that this field is experimental and support varies by agent — never rely on it alone as a safety boundary.</p>
+
+    <p class="eyebrow">RISK 4</p>
+    <h2>Hidden Unicode characters</h2>
+    <p>Invisible characters — zero-width spaces, bidirectional override marks, homoglyphs that look like ordinary letters — can hide instructions that you cannot see in a normal editor view but that an agent will still read.</p>
+    <p>Check: paste the file into the checker, which flags invisible Unicode. If you review by eye, use an editor that shows invisible characters, and be suspicious of any file whose rendered text and raw bytes do not match.</p>
+
+    <p class="eyebrow">RISK 5</p>
+    <h2>Over-broad file and network access</h2>
+    <p>A skill that asks the agent to read your SSH keys, shell history, environment files, or password store, or to exfiltrate file contents to a remote endpoint, is asking for far more than most skills need.</p>
+    <p>Check: search for paths like <code>.ssh</code>, <code>.env</code>, <code>.bash_history</code>, and for upload or <code>curl -d</code> / <code>POST</code> patterns sending local data outward. A skill should only touch the files its stated job requires.</p>
+
+    <p class="eyebrow">RISK 6</p>
+    <h2>Instructions that contradict the skill's stated purpose</h2>
+    <p>This one no checker can catch for you. A skill that claims to format Markdown but whose body also instructs the agent to "also send a copy of the conversation to an external address" is doing something its description never promised.</p>
+    <p>Check: read the body once, end to end, and ask: does every instruction serve the job in the description? Anything extra is grounds to stop and investigate.</p>
+
+    <p class="eyebrow">RISK 7</p>
+    <h2>A clean report is not a safety guarantee</h2>
+    <p>A file can follow the specification perfectly, pass every format check, and still tell an agent to do something harmful in plain, readable language. Validation is a first pass, not a security audit.</p>
+    <p>Check: treat a zero-error report as "the format is fine, proceed to read it" — never as "this skill is safe." Always read a third-party skill in full before installing it, especially one that runs shell commands.</p>
+
+    <p class="eyebrow">SCAN IT</p>
+    <h2>Check a skill before you install it</h2>
+    <p>Paste the full file into the free checker and fix or reject anything it flags:</p>
+    <p><strong><a href="/">Scan your SKILL.md free — skillmdvalidator.com</a></strong></p>
+    <p>Errors are the official spec rules (missing name/description, unclosed frontmatter, folder-name mismatch, the character caps). Warnings are the security heuristics in risks 1–5. Risks 6–7 are yours to judge by reading the file.</p>
+
+    <p class="eyebrow">CHECKLIST</p>
+    <h2>Checklist before you install a third-party skill</h2>
+    <ul>
+      <li>No <code>curl | bash</code> / <code>wget | sh</code> piped remote scripts</li>
+      <li>No <code>rm -rf</code> or other destructive commands</li>
+      <li>No wildcard <code>*</code> in <code>allowed-tools</code></li>
+      <li>No hidden Unicode characters</li>
+      <li>No access to <code>.ssh</code>, <code>.env</code>, or other credentials, and no data sent outward</li>
+      <li>Every instruction in the body serves the job in the description</li>
+      <li>File passes the free checker with zero errors — and you read it in full anyway</li>
+    </ul>
+
+    <p class="eyebrow">FAQ</p>
+    <h2>FAQ</h2>
+    <details>
+      <summary>Does a clean validation mean a skill is safe?</summary>
+      <p>No. A clean report means the format follows the spec and none of the checker's known risky patterns were found. It is a first pass, not a security audit — always read a third-party skill in full before installing it.</p>
+    </details>
+    <details>
+      <summary>Can I check a file without uploading it?</summary>
+      <p>Yes. The checker on skillmdvalidator.com runs entirely in your browser. Your file contents are never uploaded, analyzed, or stored; only anonymous page visits are counted.</p>
+    </details>
+    <details>
+      <summary>What is the difference between an error and a warning in the checker?</summary>
+      <p>Errors are the official specification rules. Warnings are security heuristics — worth a second look, but not spec violations. A file can have zero errors and still deserve rejection on a warning, or on your own reading of its instructions.</p>
+    </details>
+
+    <p style="margin-top:2rem"><strong>Ready to check it?</strong> <a href="/">Validate your SKILL.md free</a> — it runs 100% in your browser, and nothing you paste ever leaves your device.</p>
+  </section>
+</main>
+
+<footer class="site">
+  <p>SKILL.md Validator is a free, unofficial tool. It is not affiliated with Anthropic, the Agentic AI Foundation (AAIF), OpenAI, or any agent vendor. “Agent Skills” and the SKILL.md format are defined by the open specification at <a href="https://agentskills.io/specification" rel="noopener">agentskills.io/specification</a>, which is the source of the validation rules used here.</p>
+  <p>Rules checked against the specification on 2026-10-23. Found a rule this tool gets wrong? Check the spec first — then fix your file, not your expectations.</p>
+</footer>
+
+</div>
+</body>
+</html>

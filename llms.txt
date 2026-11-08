@@ -1,0 +1,27 @@
+# SKILL.md Validator
+
+> Free online SKILL.md validator and security checker for Agent Skills files. Paste a SKILL.md file to check its frontmatter against the official spec, estimate the token cost it adds to every session, and scan for risky patterns — 100% in the browser, nothing is uploaded.
+
+## How it works
+
+1. Open https://skillmdvalidator.com/
+2. Paste your SKILL.md content (or drop the file) into the validator
+3. Get instant results: format errors, security warnings, best-practice suggestions, token estimate
+4. Fix the issues and re-check until the report is clean
+
+## Pricing
+
+Free. No sign-up, no account, no paywall. The tool runs entirely in your browser.
+
+## Alternatives
+
+- skills-ref (the official reference implementation from agentskills.io): a library for programmatic validation, not a web tool
+- LOLSkills / Skill Guard web scanners: security-only scanning, no format validation against the official spec
+
+This tool combines format validation + security scan + multi-agent compatibility table + 100% local processing in one page.
+
+## Pages
+
+- Tool: https://skillmdvalidator.com/
+- Guide: How to Write a SKILL.md That Agents Actually Load: https://skillmdvalidator.com/how-to-write-a-skill-md.html
+- Checklist: SKILL.md Security — 7 Risks to Check Before You Install a Skill: https://skillmdvalidator.com/skill-md-security-checklist.html

@@ -1,5 +1,24 @@
 User-agent: *
 Allow: /
 
-# TODO(owner): replace the placeholder domain with the real domain after launch.
+# AI crawlers explicitly allowed (GEO): ChatGPT Search, ChatGPT browsing,
+# model training, Claude, Perplexity, Google AI Overviews
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://skillmdvalidator.com/sitemap.xml

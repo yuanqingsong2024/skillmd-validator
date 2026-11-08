@@ -20,6 +20,68 @@
   gtag('js', new Date());
   gtag('config', 'G-309C665CHX');
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "SKILL.md Validator",
+      "url": "https://skillmdvalidator.com/",
+      "description": "Free online SKILL.md validator and security checker for Agent Skills files. Runs 100% in the browser, nothing uploaded."
+    },
+    {
+      "@type": "Organization",
+      "name": "SKILL.md Validator",
+      "url": "https://skillmdvalidator.com/"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "SKILL.md Validator",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web browser",
+      "url": "https://skillmdvalidator.com/",
+      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+      "description": "Free, private SKILL.md validator: check frontmatter against the official Agent Skills spec, estimate token cost, and scan for risky patterns — all in your browser, nothing uploaded."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this the official Agent Skills validator?",
+          "acceptedAnswer": {"@type": "Answer", "text": "No. This is an independent, unofficial tool. The specification's own reference validator is the skills-ref library mentioned on agentskills.io. This page implements the published specification's frontmatter rules in JavaScript so you can check a file instantly in the browser, and adds clearly-labelled security heuristics and best-practice suggestions on top."}
+        },
+        {
+          "@type": "Question",
+          "name": "Is my SKILL.md uploaded anywhere?",
+          "acceptedAnswer": {"@type": "Answer", "text": "No. All checking runs in JavaScript on this page, on your device. Your file contents are never uploaded, analyzed, or stored anywhere. Anonymous page visits are counted with Google Analytics; that counts visits only and never sees your file contents. You can even save this page and use it offline."}
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the folder name matter so much?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Because the specification says the name field must match the parent directory name. It is one of the most common reasons a skill silently fails to load: someone renames the folder (or copies the file into a differently-named folder) and the agent can no longer reconcile the two. This validator checks it whenever you provide the folder name."}
+        },
+        {
+          "@type": "Question",
+          "name": "What does the token estimate mean?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Agents load every installed skill's name and description at startup, before deciding what to use. The estimate here is deliberately rough — total characters of name + description divided by 4 (a common approximation of ~4 characters per token for English text). Treat it as a budget signal, not an exact tokenizer count: if one skill costs several hundred tokens of standing context, its description is probably doing too much."}
+        },
+        {
+          "@type": "Question",
+          "name": "Does a clean report mean a skill is safe to install?",
+          "acceptedAnswer": {"@type": "Answer", "text": "No. A clean report means the file follows the specification and none of this tool's known risky patterns were found. It is a first pass, not a security audit: a skill can be perfectly formatted and still tell an agent to do harmful things in plain language. Always read third-party skills in full before installing them, especially anything that runs shell commands."}
+        },
+        {
+          "@type": "Question",
+          "name": "Which checks are official rules and which are opinions?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Anything labelled an error comes straight from the official specification (missing or invalid name/description, unclosed frontmatter, folder-name mismatch, the 1,024-character description cap, the 500-character compatibility cap). Warnings are security heuristics (piped remote scripts, destructive commands, wildcard tool approvals, invisible characters). Suggestions are best practice — for example adding a 'Use when...' trigger sentence to the description. The full source list is in this project's README."}
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <div class="wrap">
