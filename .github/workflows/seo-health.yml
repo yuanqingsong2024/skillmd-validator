@@ -1,5 +1,6 @@
 # 每日 SEO 健康检查：每天 09:00（北京时间）自动跑，也可手动触发
-# 检查项：首页存活、robots.txt、sitemap 全部 URL 返回 200、全站死链扫描
+# 检查项：首页存活、robots.txt、sitemap 全部 URL 返回 200、全站死链扫描、
+#         仓库 HTML 页面是否都在 sitemap 里（防新文章漏加）
 # 失败会自动发邮件通知仓库 owner；在仓库 Actions 标签页看每次运行的详细报告
 name: SEO health check
 
@@ -13,10 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Check site health
         run: |
           python3 - <<'PYEOF'
-          import re, sys, urllib.request, urllib.error, urllib.parse
+          import re, os, sys, urllib.request, urllib.error, urllib.parse
           import xml.etree.ElementTree as ET
           from html.parser import HTMLParser
 
@@ -99,6 +103,21 @@ jobs:
                   seen[abs_url] = c2
                   good = isinstance(c2, int) and 200 <= c2 < 400
                   ok('link %s' % abs_url, good, 'got %s (from %s)' % (c2, page))
+
+          # 5. 仓库 HTML 页面是否都在 sitemap 里（防新文章漏加；
+          #    google 开头的 GSC 验证文件不算内容页，跳过）
+          missing = []
+          for f in sorted(os.listdir('.')):
+              if not f.endswith('.html') or f.startswith('google'):
+                  continue
+              expect = SITE + '/' if f == 'index.html' else SITE + '/' + f
+              if expect not in page_urls:
+                  missing.append((f, expect))
+          for f, expect in missing:
+              print('FAIL - html not in sitemap: %s (expected %s)' % (f, expect))
+              failures.append('html not in sitemap: %s' % f)
+          if not missing:
+              print('PASS - all repo html files are in sitemap')
 
           print('\n%d links checked, %d failures' % (len(seen), len(failures)))
           sys.exit(1 if failures else 0)
