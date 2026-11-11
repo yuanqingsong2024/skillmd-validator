@@ -1,6 +1,6 @@
 # GSC 每日报告
 
-统计区间：2026-10-12 至 2026-11-08（GSC 数据延迟 2~3 天）
+统计区间：2026-10-13 至 2026-11-09（GSC 数据延迟 2~3 天）
 
 ## 收录状态（URL Inspection）
 
@@ -14,8 +14,8 @@
 
 | 页面 | 点击 | 曝光 | 点击率 | 平均排名 |
 |---|---:|---:|---:|---:|
-| https://skillmdvalidator.com/ | 2 | 22 | 9.1% | 7.6 |
-| https://skillmdvalidator.com/how-to-write-a-skill-md.html | 0 | 4 | 0.0% | 28.0 |
+| https://skillmdvalidator.com/ | 2 | 23 | 8.7% | 7.5 |
+| https://skillmdvalidator.com/how-to-write-a-skill-md.html | 0 | 6 | 0.0% | 20.2 |
 | https://skillmdvalidator.com/skill-md-security-checklist.html | 0 | 2 | 0.0% | 6.5 |
 
 ## 热门查询词（近 28 天）
