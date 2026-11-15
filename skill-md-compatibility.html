@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SKILL.md Compatibility: Where Each Agent Looks for Your Skills (2026 Guide)</title>
+<meta name="description" content="One SKILL.md folder, five different install paths. Where Claude Code, Codex, Cursor, Gemini CLI, and Copilot look for skills, what differs between them, and how to make one skill work everywhere — then check it free in your browser.">
+<link rel="canonical" href="https://skillmdvalidator.com/skill-md-compatibility.html">
+<meta property="og:title" content="SKILL.md Compatibility: Where Each Agent Looks for Your Skills (2026 Guide)">
+<meta property="og:description" content="One SKILL.md folder, five different install paths. Where each agent looks for skills — and how to make one skill work everywhere.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://skillmdvalidator.com/skill-md-compatibility.html">
+<meta property="og:image" content="https://skillmdvalidator.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://skillmdvalidator.com/og-image.png">
+<link rel="stylesheet" href="style.css">
+<!-- Google tag (gtag.js) - page visits only; SKILL.md file contents are never sent. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-309C665CHX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-309C665CHX');
+</script>
+</head>
+<body>
+<div class="wrap">
+
+<header class="site">
+  <span class="hero-badge"><span class="dot"></span>COMPATIBILITY GUIDE · FREE</span>
+  <h1>SKILL.md Compatibility: Where Each Agent <span class="grad">Looks for Your Skills</span></h1>
+  <p class="tagline">One SKILL.md folder, five different install paths. Where Claude Code, Codex, Cursor, Gemini CLI, and Copilot look for skills — and how to make one skill work everywhere.</p>
+  <p class="hint">Published November 15, 2026. Paths checked against public documentation and open-source installers on 2026-10-23. Prefer the tool? <a href="/">Validate your SKILL.md free</a>.</p>
+</header>
+
+<main>
+  <section class="content">
+    <p>Here is the good news: you only have to write a skill once. The SKILL.md format is shared, so the same folder works across agents. Here is the catch: every agent looks for that folder in a different place. A skill that loads perfectly in one agent and is invisible in another usually is not broken — it is just sitting in a folder the second agent never scans.</p>
+    <p>This guide covers the five agents most skill authors care about, the two locations each one scans, and the differences that actually matter.</p>
+
+    <p class="eyebrow">THE TABLE</p>
+    <h2>The compatibility table</h2>
+    <div class="table-card"><div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Agent</th><th>User-wide location</th><th>Per-project location</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Claude Code</td><td><code>~/.claude/skills/</code></td><td><code>.claude/skills/</code></td></tr>
+        <tr><td>OpenAI Codex</td><td><code>~/.agents/skills/</code></td><td><code>.agents/skills/</code></td></tr>
+        <tr><td>Cursor</td><td><code>~/.cursor/skills/</code> (also reads <code>~/.agents/skills/</code>)</td><td><code>.cursor/skills/</code> (also <code>.agents/skills/</code>)</td></tr>
+        <tr><td>Gemini CLI</td><td><code>~/.gemini/skills/</code> (also reads <code>~/.agents/skills/</code>)</td><td><code>.gemini/skills/</code> (also <code>.agents/skills/</code>)</td></tr>
+        <tr><td>GitHub Copilot (VS Code)</td><td><code>~/.copilot/skills/</code> (also reads <code>~/.agents/skills/</code>)</td><td><code>.github/skills/</code> (also <code>.agents/skills/</code>)</td></tr>
+      </tbody>
+    </table>
+    </div></div>
+    <p>Paths were cross-checked against public documentation and open-source installers on 2026-10-23. Several agents also read the shared <code>~/.agents/skills/</code> location, and exact paths can change between versions, so if a skill is not discovered, confirm against your agent's own docs first.</p>
+    <p><strong>Note: if you moved to Google's Antigravity CLI (<code>agy</code>), the global path stays <code>~/.gemini/skills/</code> (or <code>~/.gemini/antigravity-cli/skills/</code>), but the project path is <code>.agents/skills/</code>, not <code>.gemini/skills/</code>.</strong> Workspace skills must be moved by hand (<code>mv .gemini/skills/ .agents/skills/</code>) before <code>agy</code> picks them up.</p>
+
+    <p class="eyebrow">ONE FOLDER</p>
+    <h2>The one-folder trick</h2>
+    <p>If you use more than one agent, do not maintain five copies of the same skill. Keep one canonical skills folder and symlink it into each agent's location, so a single SKILL.md serves every tool. One copy also means one place to fix: correct a description once, and every agent picks up the fix.</p>
+    <pre><code># Example: one canonical folder, linked into Claude Code's location
+ln -s ~/.agents/skills/pdf-table-extractor ~/.claude/skills/pdf-table-extractor</code></pre>
+
+    <p class="eyebrow">DIFFERENCES</p>
+    <h2>What actually differs between agents</h2>
+    <p><strong>1. The scan path — the difference that causes most "it works here, not there" reports.</strong> The format is the same; the folder is not. Before debugging anything else, check that the skill folder is under a path your agent actually scans.</p>
+    <p><strong>2. User-wide vs. per-project.</strong> User-wide skills are available in every session. Per-project skills travel with the repository, so a teammate who clones the project gets the same skills. Put personal utilities user-wide; put project-specific workflows per-project.</p>
+    <p><strong>3. The shared <code>~/.agents/skills/</code> location.</strong> Cursor, Gemini CLI, and Copilot also read this shared folder, and Codex uses it as its home. If you only want to maintain one extra location beyond each agent's own folder, this is the one with the widest coverage.</p>
+    <p><strong>4. <code>allowed-tools</code> support varies.</strong> The frontmatter field that pre-approves tools is experimental, and agents differ in how much of it they honour. Never rely on it alone as a safety boundary, and never use a wildcard value — list only the specific tools the skill needs.</p>
+    <p><strong>5. Unknown fields are ignored, not errors.</strong> The base specification defines six frontmatter fields: <code>name</code>, <code>description</code>, <code>license</code>, <code>compatibility</code>, <code>metadata</code>, and <code>allowed-tools</code>. Agents ignore fields they do not recognise, so a vendor-specific field will not break other agents — but a typo in a real field (<code>descripton</code>, <code>allwed-tools</code>) means the field you thought you set was never set.</p>
+
+    <p class="eyebrow">DEBUG ORDER</p>
+    <h2>Works in one agent but not another? Check in this order</h2>
+    <ol>
+      <li><strong>Path first.</strong> Is the folder under a location this agent scans? See the table above.</li>
+      <li><strong>Name match.</strong> Does the <code>name</code> field match the folder name exactly? A rename breaks this silently.</li>
+      <li><strong>Restart.</strong> Most agents read the skill list at startup. Restart the agent after adding or renaming a skill.</li>
+      <li><strong>Format.</strong> Paste the file into the checker and fix every error — a file with a spec error may load in a lenient agent and fail in a strict one.</li>
+      <li><strong>Trigger wording.</strong> If the skill loads but never activates, the <code>description</code> probably does not describe the situations it should trigger on. Add a "Use when…" sentence with specific keywords.</li>
+    </ol>
+
+    <p class="eyebrow">CHECK IT</p>
+    <h2>Check a skill before you ship it to every agent</h2>
+    <p>Paste the full file into the free checker and fix every error first:</p>
+    <p><strong><a href="/">Validate your SKILL.md free — skillmdvalidator.com</a></strong></p>
+    <p>Errors are the official spec rules (missing name/description, unclosed frontmatter, folder-name mismatch, the character caps). Warnings are security heuristics worth a second look before you install or share a third-party skill. Validating against the shared base specification, rather than one vendor's quirks, is what makes one skill work everywhere.</p>
+
+    <p class="eyebrow">FAQ</p>
+    <h2>FAQ</h2>
+    <details>
+      <summary>Do I need a different SKILL.md for each agent?</summary>
+      <p>No. The format is shared. Write one skill, put it where each agent looks (or symlink one canonical folder into each location), and validate it once against the base specification.</p>
+    </details>
+    <details>
+      <summary>Why does my skill work in Claude Code but not in Cursor?</summary>
+      <p>Almost always the path, not the file. Cursor scans <code>~/.cursor/skills/</code> and the shared <code>~/.agents/skills/</code>; a folder sitting only under <code>~/.claude/skills/</code> is invisible to it. Work through the five checks above in order.</p>
+    </details>
+    <details>
+      <summary>Can I check a file without uploading it?</summary>
+      <p>Yes. The checker on skillmdvalidator.com runs entirely in your browser. Your file contents are never uploaded, analyzed, or stored; only anonymous page visits are counted.</p>
+    </details>
+    <details>
+      <summary>Does a clean validation mean a skill works in every agent?</summary>
+      <p>No. A clean report means the format follows the spec and none of the checker's known risky patterns were found. It cannot verify your install path, your agent version, or whether the description triggers at the right moments — those are yours to check with the list above.</p>
+    </details>
+
+    <p style="margin-top:2rem"><strong>Ready to check it?</strong> <a href="/">Validate your SKILL.md free</a> — it runs 100% in your browser, and nothing you paste ever leaves your device.</p>
+  </section>
+</main>
+
+<footer class="site">
+  <p>SKILL.md Validator is a free, unofficial tool. It is not affiliated with Anthropic, the Agentic AI Foundation (AAIF), OpenAI, or any agent vendor. “Agent Skills” and the SKILL.md format are defined by the open specification at <a href="https://agentskills.io/specification" rel="noopener">agentskills.io/specification</a>, which is the source of the validation rules used here.</p>
+  <p>Paths checked against public documentation and open-source installers on 2026-10-23. Found a path this guide gets wrong? Check your agent's own docs first — then fix your folder, not your expectations.</p>
+</footer>
+
+</div>
+</body>
+</html>
