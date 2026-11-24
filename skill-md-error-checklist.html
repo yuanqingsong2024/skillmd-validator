@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SKILL.md Errors: Why Your Skill Won't Load (and How to Fix Each One)</title>
+<meta name="description" content="Your SKILL.md not loading? The 9 most common SKILL.md errors — missing frontmatter, invalid name, folder-name mismatch, over-long description — with the exact fix for each, then check yours free in your browser.">
+<link rel="canonical" href="https://skillmdvalidator.com/skill-md-error-checklist.html">
+<meta property="og:title" content="SKILL.md Errors: Why Your Skill Won't Load (and How to Fix Each One)">
+<meta property="og:description" content="The 9 most common SKILL.md errors — missing frontmatter, invalid name, folder-name mismatch, over-long description — with the exact fix for each.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://skillmdvalidator.com/skill-md-error-checklist.html">
+<meta property="og:image" content="https://skillmdvalidator.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://skillmdvalidator.com/og-image.png">
+<link rel="stylesheet" href="style.css">
+<!-- Google tag (gtag.js) - page visits only; SKILL.md file contents are never sent. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-309C665CHX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-309C665CHX');
+</script>
+</head>
+<body>
+<div class="wrap">
+
+<header class="site">
+  <span class="hero-badge"><span class="dot"></span>ERROR CHECKLIST · FREE</span>
+  <h1>SKILL.md Errors: Why Your Skill Won't Load <span class="grad">(and How to Fix Each One)</span></h1>
+  <p class="tagline">The 9 most common SKILL.md errors — missing frontmatter, invalid name, folder-name mismatch, over-long description — with the exact fix for each.</p>
+  <p class="hint">Published November 22, 2026. Rules checked against the <a href="https://agentskills.io/specification" rel="noopener">official Agent Skills specification</a> on 2026-10-23. Prefer the tool? <a href="/">Validate your SKILL.md free</a>.</p>
+</header>
+
+<main>
+  <section class="content">
+    <p>The most frustrating thing about a broken SKILL.md is the silence. Most agents do not show you an error when a skill fails to load — they simply never surface it. That is why the first step is not guessing, but checking: paste the file into a checker and fix every error first, then work through the warnings. The nine errors below are the ones that actually stop a skill from loading, in the order worth checking them.</p>
+
+    <p class="eyebrow">ERROR 1</p>
+    <h2>No YAML frontmatter at all</h2>
+    <p><strong>What you see:</strong> the checker reports "No YAML frontmatter found", or the agent ignores the file entirely.</p>
+    <p><strong>Why it happens:</strong> a SKILL.md must start with a YAML frontmatter block delimited by <code>---</code> lines. A file that jumps straight into Markdown instructions has no <code>name</code> or <code>description</code> for the agent to read, so there is nothing to load.</p>
+    <p><strong>Fix:</strong></p>
+    <pre><code>---
+name: pdf-table-extractor
+description: Extract tables from PDF files into CSV. Use when the user asks to pull structured data out of a PDF.
+---
+
+Your instructions go here.</code></pre>
+
+    <p class="eyebrow">ERROR 2</p>
+    <h2>Unclosed frontmatter</h2>
+    <p><strong>What you see:</strong> "The opening <code>---</code> has no closing <code>---</code> line."</p>
+    <p><strong>Why it happens:</strong> you wrote the opening <code>---</code> and the fields, but forgot the second <code>---</code>. Without it, the agent cannot tell where the frontmatter ends and the instructions begin, so the whole file is unreadable as a skill.</p>
+    <p><strong>Fix:</strong> add a second <code>---</code> line immediately after the last frontmatter field, before any instruction text.</p>
+
+    <p class="eyebrow">ERROR 3</p>
+    <h2>Missing or empty <code>name</code></h2>
+    <p><strong>What you see:</strong> the checker reports that <code>name</code> is required.</p>
+    <p><strong>Why it happens:</strong> <code>name</code> is the skill's identifier. Without it, the agent has nothing to register the skill under.</p>
+    <p><strong>Fix:</strong> add one line, for example <code>name: pdf-table-extractor</code>.</p>
+
+    <p class="eyebrow">ERROR 4</p>
+    <h2>Invalid <code>name</code> characters or length</h2>
+    <p><strong>What you see:</strong> the name is flagged even though it is present.</p>
+    <p><strong>Why it happens:</strong> the specification is strict here. A valid name is 1–64 characters, lowercase letters, numbers, and hyphens only. It must not start or end with a hyphen, and must not contain consecutive hyphens.</p>
+    <p><strong>Fix — bad vs. good:</strong></p>
+    <pre><code># Bad: uppercase, underscores, trailing hyphen
+name: PDF_Table_Extractor-
+
+# Good
+name: pdf-table-extractor</code></pre>
+
+    <p class="eyebrow">ERROR 5</p>
+    <h2><code>name</code> does not match the folder name</h2>
+    <p><strong>What you see:</strong> the skill exists on disk but never appears in the agent — the quietest failure of all.</p>
+    <p><strong>Why it happens:</strong> the specification says <code>name</code> must match the parent directory name. Rename the folder (or copy the file into a differently-named folder) and the agent can no longer reconcile the two.</p>
+    <p><strong>Fix:</strong> pick one spelling and use it in both places. If the folder is <code>pdf-table-extractor</code>, the frontmatter must say exactly <code>name: pdf-table-extractor</code>. The checker verifies this whenever you fill in the folder name field — that field exists precisely for this check.</p>
+
+    <p class="eyebrow">ERROR 6</p>
+    <h2>Missing, empty, or over-long <code>description</code></h2>
+    <p><strong>What you see:</strong> the skill is registered but never triggers, or the checker flags the description.</p>
+    <p><strong>Why it happens:</strong> <code>description</code> is the trigger. Agents load every installed skill's name and description at startup and use the description to decide whether to activate the full skill. An empty description gives the agent nothing to match on; a description over 1,024 characters breaks the spec cap.</p>
+    <p><strong>Fix — bad vs. good:</strong></p>
+    <pre><code># Bad: empty, or a vague one-liner that matches nothing
+description:
+
+# Bad: a 1,500-character essay in the description field
+# Good: what it does + when to use it, in one tight paragraph
+description: Extract tables from PDF files into CSV. Use when the user asks to pull structured data out of a PDF, or when a PDF contains tabular data that needs to become a spreadsheet.</code></pre>
+    <p>Keep it specific: name the file type, the output, and the trigger situation. The standing cost matters too — name + description sit in the agent's context for every session, so a bloated description taxes every conversation, not just this skill.</p>
+
+    <p class="eyebrow">ERROR 7</p>
+    <h2><code>compatibility</code> over 500 characters</h2>
+    <p><strong>What you see:</strong> a spec error on a field you may have treated as free text.</p>
+    <p><strong>Why it happens:</strong> <code>compatibility</code> is capped at 500 characters if provided. It is meant for short environment requirements — intended product, system packages, network access — not a full requirements document.</p>
+    <p><strong>Fix:</strong> shorten it to a single line, for example <code>compatibility: Requires Python 3.11 and network access to fetch PDFs.</code> Move the rest into the body.</p>
+
+    <p class="eyebrow">ERROR 8</p>
+    <h2><code>allowed-tools</code> written with commas</h2>
+    <p><strong>What you see:</strong> not a spec error, but a suggestion the checker raises — and one worth fixing anyway.</p>
+    <p><strong>Why it happens:</strong> the spec defines <code>allowed-tools</code> as a space-separated string. Commas may be misread by some agents. Note also that this field is experimental and support varies by agent, so never rely on it alone as a safety boundary.</p>
+    <p><strong>Fix — bad vs. good:</strong></p>
+    <pre><code># Bad
+allowed-tools: Read, Bash
+
+# Good
+allowed-tools: Read Bash</code></pre>
+    <p>And never use a wildcard here: <code>allowed-tools: Bash(*)</code> pre-approves tools without per-use checks, which is a security warning, not just a formatting nit.</p>
+
+    <p class="eyebrow">ERROR 9</p>
+    <h2>Unknown frontmatter field (usually a typo)</h2>
+    <p><strong>What you see:</strong> the checker suggests an unknown field name.</p>
+    <p><strong>Why it happens:</strong> usually a misspelling of a real field (<code>descripton</code>, <code>allwed-tools</code>) or a vendor-specific field another tool invented. Unknown fields are not spec errors, but a typo here means the field you thought you set was never set.</p>
+    <p><strong>Fix:</strong> check the spelling against the six spec fields — <code>name</code>, <code>description</code>, <code>license</code>, <code>compatibility</code>, <code>metadata</code>, <code>allowed-tools</code> — and delete anything that is not one of them unless you know a specific agent reads it.</p>
+
+    <p class="eyebrow">DIAGNOSIS</p>
+    <h2>Quick diagnosis: which error is yours?</h2>
+    <div class="table-card"><div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Symptom</th><th>Check first</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Skill never appears, no error shown</td><td>Error 5 (folder-name mismatch), then Error 1</td></tr>
+        <tr><td>Checker reports a spec error</td><td>Errors 1–4, 6–7 in order</td></tr>
+        <tr><td>Skill appears but never triggers</td><td>Error 6 (empty or vague description)</td></tr>
+        <tr><td>Skill works in one agent but not another</td><td>Error 9, plus the per-agent install path (see the compatibility table on the checker homepage)</td></tr>
+      </tbody>
+    </table>
+    </div></div>
+
+    <p class="eyebrow">CHECKLIST</p>
+    <h2>Before you publish: the 60-second checklist</h2>
+    <ul>
+      <li>File starts with <code>---</code>, ends the frontmatter with a second <code>---</code></li>
+      <li><code>name</code> is 1–64 characters, lowercase + numbers + hyphens, matches the folder name exactly</li>
+      <li><code>description</code> is non-empty, under 1,024 characters, and says what the skill does and when to use it</li>
+      <li><code>compatibility</code>, if present, is under 500 characters</li>
+      <li><code>allowed-tools</code>, if present, is space-separated with no wildcard</li>
+      <li>File passes the free checker with zero errors — then read the warnings too, because a clean format report is not a safety audit</li>
+    </ul>
+
+    <p class="eyebrow">CHECK IT</p>
+    <h2>Check your skill before you publish it</h2>
+    <p>Paste the full file into the free checker and fix every error first:</p>
+    <p><strong><a href="/">Validate your SKILL.md free — skillmdvalidator.com</a></strong></p>
+    <p>Errors are the official spec rules (missing name/description, unclosed frontmatter, folder-name mismatch, the character caps). Warnings are security heuristics worth a second look before you install or share a third-party skill. A clean format report is not a safety audit — read third-party skills in full before installing them.</p>
+
+    <p class="eyebrow">FAQ</p>
+    <h2>FAQ</h2>
+    <details>
+      <summary>My skill passes the checker but still does not load. What now?</summary>
+      <p>Check the install path first: each agent scans a different folder (Claude Code <code>~/.claude/skills/</code>, Codex <code>~/.agents/skills/</code>, Cursor <code>~/.cursor/skills/</code>, Gemini CLI <code>~/.gemini/skills/</code> — the full table is on the checker homepage). Then restart the agent; most agents only scan for skills at startup.</p>
+    </details>
+    <details>
+      <summary>Is an "unknown field" warning a spec error?</summary>
+      <p>No. Errors are spec violations (missing or invalid name/description, unclosed frontmatter, folder-name mismatch, the 1,024- and 500-character caps). Warnings are security heuristics, and suggestions are best practice. Fix errors first, then warnings, then suggestions.</p>
+    </details>
+    <details>
+      <summary>Does a zero-error report mean my skill is safe to install?</summary>
+      <p>No — the same line the homepage draws. Zero errors means the format follows the spec and none of the checker's known risky patterns were found. A perfectly formatted skill can still tell an agent to do harmful things in plain language. Read third-party skills in full before installing them.</p>
+    </details>
+    <details>
+      <summary>Where do I check my file?</summary>
+      <p>Paste it into the free checker on the homepage — it runs entirely in your browser, nothing is uploaded — fix every error, then re-check until the report is clean.</p>
+    </details>
+
+    <p style="margin-top:2rem"><strong>Ready to check it?</strong> <a href="/">Validate your SKILL.md free</a> — it runs 100% in your browser, and nothing you paste ever leaves your device.</p>
+  </section>
+</main>
+
+<footer class="site">
+  <p>SKILL.md Validator is a free, unofficial tool. It is not affiliated with Anthropic, the Agentic AI Foundation (AAIF), OpenAI, or any agent vendor. “Agent Skills” and the SKILL.md format are defined by the open specification at <a href="https://agentskills.io/specification" rel="noopener">agentskills.io/specification</a>, which is the source of the validation rules used here.</p>
+  <p>Rules checked against the specification on 2026-10-23. Found a rule this tool gets wrong? Check the spec first — then fix your file, not your expectations.</p>
+</footer>
+
+</div>
+</body>
+</html>
