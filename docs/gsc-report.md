@@ -1,6 +1,6 @@
 # GSC 每日报告
 
-统计区间：2026-10-26 至 2026-11-22（GSC 数据延迟 2~3 天）
+统计区间：2026-10-27 至 2026-11-23（GSC 数据延迟 2~3 天）
 
 ## 收录状态（URL Inspection）
 
@@ -10,14 +10,15 @@
 | https://skillmdvalidator.com/how-to-write-a-skill-md.html | PASS | Submitted and indexed |
 | https://skillmdvalidator.com/skill-md-security-checklist.html | PASS | Submitted and indexed |
 | https://skillmdvalidator.com/skill-md-compatibility.html | PASS | Submitted and indexed |
+| https://skillmdvalidator.com/skill-md-error-checklist.html | PASS | Submitted and indexed |
 
 ## 页面表现（近 28 天）
 
 | 页面 | 点击 | 曝光 | 点击率 | 平均排名 |
 |---|---:|---:|---:|---:|
-| https://skillmdvalidator.com/ | 2 | 45 | 4.4% | 13.9 |
+| https://skillmdvalidator.com/ | 3 | 49 | 6.1% | 13.7 |
 | https://skillmdvalidator.com/how-to-write-a-skill-md.html | 0 | 8 | 0.0% | 25.2 |
-| https://skillmdvalidator.com/skill-md-compatibility.html | 0 | 28 | 0.0% | 49.7 |
+| https://skillmdvalidator.com/skill-md-compatibility.html | 0 | 30 | 0.0% | 48.9 |
 | https://skillmdvalidator.com/skill-md-security-checklist.html | 0 | 5 | 0.0% | 8.0 |
 
 ## 热门查询词（近 28 天）
@@ -25,7 +26,6 @@
 | 查询词 | 点击 | 曝光 | 点击率 | 平均排名 |
 |---|---:|---:|---:|---:|
 | %20skill.md%20validator | 0 | 2 | 0.0% | 2.0 |
-| agent skills verifier | 0 | 1 | 0.0% | 6.0 |
 | agent-ecosystem/skill-validator | 0 | 4 | 0.0% | 65.5 |
 | agents.md vs skills | 0 | 2 | 0.0% | 78.5 |
 | antigravity skills .agents/skills skill.md frontmatter allowed-tools | 0 | 1 | 0.0% | 43.0 |
