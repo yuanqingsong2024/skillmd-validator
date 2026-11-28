@@ -308,11 +308,30 @@
       }
     }
 
-    /* --- Unknown fields: informational only --- */
+    /* --- Unknown fields: tiered by severity ---
+       Tier 1 (error): fields that belong under `metadata:` — the spec
+       defines only six top-level fields, and the official skills-ref
+       validator rejects anything else, as do claude.ai uploads and the
+       Skills API.
+       Tier 2 (warning): fields defined by Claude Code (not by the base
+       spec) — valid in Claude Code, rejected by skills-ref / upload.
+       Tier 3 (suggestion): anything else unknown — kept soft, because
+       agents ignore fields they do not recognise and vendors add new
+       fields over time. */
+    var METADATA_FIELDS = ["version", "author", "tags", "updated"];
+    var CLAUDE_CODE_FIELDS = ["argument-hint", "model", "context", "agent",
+      "hooks", "disable-model-invocation", "user-invocable", "effort"];
     Object.keys(fields).forEach(function (k) {
-      if (KNOWN_FIELDS.indexOf(k) === -1) {
+      if (KNOWN_FIELDS.indexOf(k) !== -1) return;
+      if (METADATA_FIELDS.indexOf(k) !== -1) {
+        error("Top-level field \"" + k + "\" belongs under metadata",
+          "The Agent Skills specification defines only six top-level frontmatter fields (name, description, license, compatibility, metadata, allowed-tools). \"" + k + "\" is not one of them: the official skills-ref validator rejects it, and claude.ai uploads and the Skills API fail on it. Move it under metadata: add a `metadata:` line followed by an indented `" + k + ": \"...\"` line, and delete the top-level line. Keep the value a string — metadata is a map from string keys to string values.");
+      } else if (CLAUDE_CODE_FIELDS.indexOf(k) !== -1) {
+        warning("Claude Code-only field: \"" + k + "\"",
+          "This field is defined by Claude Code, not by the base Agent Skills specification. It works in Claude Code, but the official skills-ref validator rejects it and claude.ai uploads / the Skills API fail on it. Keep it only if this skill targets Claude Code; remove it if the skill must load everywhere.");
+      } else {
         suggestion("Unknown frontmatter field: \"" + k + "\"",
-          "This field is not one of the six fields defined by the base Agent Skills specification. Some agents define their own extra fields (and agents ignore fields they do not recognise), so this is fine if you added it deliberately for a specific agent.");
+          "This field is not one of the six fields defined by the base Agent Skills specification. The official skills-ref validator rejects unknown top-level fields, and claude.ai uploads / the Skills API fail on them. If this is your own data, move it under `metadata:`; if it belongs to a specific agent, check that agent's docs — agents ignore fields they do not recognise, so it is harmless locally but the skill is not portable.");
       }
     });
 
