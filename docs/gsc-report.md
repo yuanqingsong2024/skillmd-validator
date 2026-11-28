@@ -1,6 +1,6 @@
 # GSC 每日报告
 
-统计区间：2026-10-29 至 2026-11-25（GSC 数据延迟 2~3 天）
+统计区间：2026-10-30 至 2026-11-26（GSC 数据延迟 2~3 天）
 
 ## 收录状态（URL Inspection）
 
@@ -16,11 +16,11 @@
 
 | 页面 | 点击 | 曝光 | 点击率 | 平均排名 |
 |---|---:|---:|---:|---:|
-| https://skillmdvalidator.com/ | 3 | 47 | 6.4% | 14.1 |
+| https://skillmdvalidator.com/ | 3 | 78 | 3.8% | 27.0 |
 | https://skillmdvalidator.com/how-to-write-a-skill-md.html | 0 | 8 | 0.0% | 25.2 |
-| https://skillmdvalidator.com/skill-md-compatibility.html | 0 | 31 | 0.0% | 48.9 |
+| https://skillmdvalidator.com/skill-md-compatibility.html | 0 | 46 | 0.0% | 50.3 |
 | https://skillmdvalidator.com/skill-md-error-checklist.html | 0 | 2 | 0.0% | 4.0 |
-| https://skillmdvalidator.com/skill-md-security-checklist.html | 0 | 5 | 0.0% | 8.0 |
+| https://skillmdvalidator.com/skill-md-security-checklist.html | 0 | 8 | 0.0% | 30.4 |
 
 ## 热门查询词（近 28 天）
 
@@ -32,4 +32,4 @@
 | antigravity skills .agents/skills skill.md frontmatter allowed-tools | 0 | 1 | 0.0% | 43.0 |
 | antigravity skills skill.md .agents/skills frontmatter name description allowed-tools | 0 | 1 | 0.0% | 34.0 |
 | skill.md files | 0 | 3 | 0.0% | 69.3 |
-| skill.md validator | 0 | 2 | 0.0% | 11.5 |
+| skill.md validator | 0 | 1 | 0.0% | 15.0 |
